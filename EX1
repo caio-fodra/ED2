@@ -1,0 +1,124 @@
+#include "arvore.h"
+
+
+Arvore* cria_arv_vazia (void) {
+   return NULL;
+}
+
+Arvore* constroi_arv (char c, Arvore *e, Arvore *d) {
+   Arvore *no = (Arvore*)malloc(sizeof(Arvore));
+   no->info = c;
+   no->esq = e;
+   no->dir = d;
+   return no;
+}
+
+int verifica_arv_vazia (Arvore *a) {
+   return (a == NULL);
+}
+
+void arv_libera (Arvore* a) {
+   if (!verifica_arv_vazia(a)) {
+      arv_libera (a->esq);
+      arv_libera (a->dir);
+      free(a);
+   }
+}
+
+//========= Exercício 1 - pré-ordem ====
+/*
+Arvore *a = constroi_arv('a', constroi_arv('b',
+cria_arv_vazia(), constroi_arv('d',cria_arv_vazia(),cria_arv_vazia())), constroi_arv('c', constroi_arv('e',cria_arv_vazia(),cria_arv_vazia()), constroi_arv('f',cria_arv_vazia(),cria_arv_vazia())));
+*/
+
+//========= Exercício 1 - in-ordem ====
+ 
+
+//========= Exercício 1 - pós-ordem ====
+
+
+//========= Exercício 2 - pertence ====
+int pertence_arv (Arvore *a, char c){
+ if(a->esq == NULL && a->dir == NULL){
+   return 0;
+ }
+  if(a->info == c){
+    return 1;
+  }
+  if(a->esq != NULL){
+    pertence_arv(a->esq, c);
+  }
+
+  if(a->dir != NULL){
+    pertence_arv(a->dir, c);
+  }
+}
+
+//========= Exercício 3 - conta nós ====
+
+int conta_nos (Arvore *a){
+  if(a == NULL){
+    return 0;
+  }
+  return 1 + conta_nos(a->esq) + conta_nos(a->dir);
+}
+
+
+
+//========= Exercício 4 - calcula altura ====
+int calcula_altura_arvore(Arvore *a) {
+  int hdir = 0;
+  while (a != NULL) {
+    hdir++;
+    a = a->dir;
+  }
+  int hesq = 0;
+  while (a != NULL) {
+    hesq++;
+    a = a->esq;
+  }
+  if(hesq > hdir){
+    return hesq;
+  }else return hdir;
+}
+
+//========= Exercício 5 - conta folhas ====
+int conta_nos_folhas (Arvore *a){
+  if(a == NULL){
+    return 0;
+  }
+  if(a->esq == NULL && a->dir == NULL){
+  return 1;
+  }
+  return conta_nos_folhas(a->esq) + conta_nos_folhas(a->dir);
+}
+
+
+int main (int argc, char *argv[]) {
+
+   Arvore *a = constroi_arv ('a',
+       constroi_arv('b',
+       cria_arv_vazia(),
+       constroi_arv('d', cria_arv_vazia(),cria_arv_vazia())
+     ),
+     constroi_arv('c',
+       constroi_arv('e',cria_arv_vazia(),cria_arv_vazia()),
+       constroi_arv('f',cria_arv_vazia(),cria_arv_vazia())
+     )
+   );	
+
+  int tem1 = 0;
+  char busc = 'a';
+  tem1 = pertence_arv (a, busc);
+  printf("tem(1 p/ sim): %d\n", tem1);
+
+  int nos = conta_nos(a);
+  printf("nos: %d\n", nos);
+  int folhas = conta_nos_folhas(a);
+  printf("folhas:%d\n", folhas);
+  int h = calcula_altura_arvore(a);
+  printf("altura: %d", h);
+   arv_libera (a);
+
+   return 0;
+};
